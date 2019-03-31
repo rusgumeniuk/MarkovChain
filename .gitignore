@@ -48,3 +48,5 @@ bin
 obj
 .vs/MarkovChain/v16/Server/sqlite3/storage.ide
 .vs/MarkovChain/v16/Server/sqlite3/db.lock
+*.ide-wal
+*.ide-shm
