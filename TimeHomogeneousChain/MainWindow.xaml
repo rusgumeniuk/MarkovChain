@@ -9,6 +9,12 @@
     Width="600"
     Height="450"
     mc:Ignorable="d">
+
+    <Window.Resources>
+        <Style TargetType="DataGridRowHeader">
+            <Setter Property="Content" Value="{Binding Path=Index}" />
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -28,24 +34,33 @@
         <Label
             Grid.Row="0"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
             Content="Кількість станів:" />
         <TextBox
-            Name="TextBoxCountOfStates"
             Grid.Row="1"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
+            TabIndex="0"
             Text="{Binding CountOfStates}" />
+        <Label
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="10,0,10,0"
+            Content="Номер початкового стану:" />
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="10,0,10,0"
+            TabIndex="1"
+            Text="{Binding StartIndex}" />
         <Label
             Grid.Row="2"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Content="Кількість кроків:" />
         <TextBox
-            Name="TextBoxNumberOfSteps"
             Grid.Row="3"
             Grid.Column="0"
             Grid.ColumnSpan="2"
+            TabIndex="2"
             Text="{Binding NumberOfSteps}" />
         <Label
             Grid.Row="4"
@@ -56,23 +71,32 @@
             Name="TransitionTable"
             Grid.Row="5"
             Grid.Column="0"
-            Grid.ColumnSpan="2" />
+            Grid.ColumnSpan="2"
+            AutoGenerateColumns="False"
+            TabIndex="3" />
         <Button
             Name="BtnCalculateStatesProbabilities"
             Grid.Row="6"
             Grid.Column="0"
             Margin="20,5"
             Click="BtnCalculateStatesProbabilities_Click"
-            Content="Розрахувати імовірності станів" />
+            Content="Розрахувати імовірності станів"
+            TabIndex="4" />
         <Button
+            Name="BtnRandomFillTable"
             Grid.Row="6"
             Grid.Column="1"
             Margin="20,5"
-            Content="Автоматично заповнити таблицю" />
+            Click="BtnRandomFillTable_Click"
+            Content="Автоматично заповнити таблицю"
+            TabIndex="5" />
         <Button
+            Name="BtnClearTable"
             Grid.Row="7"
             Grid.Column="1"
             Margin="20,5"
-            Content="Очистити таблицю" />
+            Click="BtnClearTable_Click"
+            Content="Очистити таблицю"
+            TabIndex="6" />
     </Grid>
 </Window>
