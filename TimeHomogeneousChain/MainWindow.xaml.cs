@@ -16,6 +16,7 @@ namespace TimeHomogeneousChain
         private ushort countOfStates = 1;
         private ushort numberOfSteps = 1;
         private ushort startIndex;
+        private bool isTableProgrammableChanged;
         public ushort StartIndex
         {
             get => (ushort)(startIndex + 1);
@@ -35,7 +36,7 @@ namespace TimeHomogeneousChain
                 if (value > 0)
                 {
                     countOfStates = value;
-                    GenerateTransitionTable(value);
+                    GenerateTransitionTable(TransitionTable, value);
                 }
                 else
                     MessageBox.Show("Будь ласка введіть кількість станів системи.\nЧисло повинно бути бути більше нуля!");
@@ -61,9 +62,9 @@ namespace TimeHomogeneousChain
             DataContext = this;
         }
 
-        private void GenerateTransitionTable(ushort countOfStates)
+        private void GenerateTransitionTable(DataGrid dataGrid, ushort countOfStates)
         {
-            TransitionTable.Columns.Clear();
+            dataGrid.Columns.Clear();
 
             List<State> stateList = new List<State>();
             for (int i = 0; i < countOfStates; i++)
@@ -72,17 +73,36 @@ namespace TimeHomogeneousChain
                 var col = new DataGridTextColumn() { Header = i + 1 };
                 var binding = new Binding("Values[" + i + "]");
                 col.Binding = binding;
-                TransitionTable.Columns.Add(col);
+                dataGrid.Columns.Add(col);
             }
-
-            TransitionTable.ItemsSource = stateList;
+            dataGrid.ItemsSource = stateList;
         }
 
+        private void UpdateTransitionTable(DataGrid dataGrid, decimal[,] updatedTable)
+        {
+            IList<State> updatedStates = new List<State>();
+            for (int i = 0; i < countOfStates; ++i)
+            {
+                var rowOfTable = new decimal[countOfStates];
+                for (int j = 0; j < countOfStates; j++)
+                {
+                    rowOfTable[j] = updatedTable[i, j];
+                }
+                updatedStates.Add(new State(i, rowOfTable));
+            }
+            dataGrid.ItemsSource = updatedStates;
+        }
         private void BtnCalculateStatesProbabilities_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Task task = new Task(countOfStates, startIndex, NumberOfSteps, GetTable());
+                decimal[,] parsedTable = GetTable(TransitionTable);
+                if (isTableProgrammableChanged)
+                {
+                    UpdateTransitionTable(TransitionTable, parsedTable);
+                }
+
+                Task task = new Task(countOfStates, startIndex, NumberOfSteps, parsedTable);
                 task.Solve();
                 MessageBox.Show(task.GetResult());
                 //    {0.1m, 0.2m, 0.3m, 0.4m},
@@ -96,28 +116,29 @@ namespace TimeHomogeneousChain
             }
         }
 
-        private decimal[,] GetTable()
+        private decimal[,] GetTable(DataGrid dataGrid)
         {
             decimal[,] table = new decimal[countOfStates, countOfStates];
-            for (int i = 0; i < TransitionTable.Items.Count; ++i)
+            for (int i = 0; i < dataGrid.Items.Count; ++i)
             {
-                decimal rowValue = 0;
-                for (int j = 0; j < TransitionTable.Columns.Count; ++j)
+                decimal sumOfRow = 0;
+                for (int j = 0; j < dataGrid.Columns.Count; ++j)
                 {
-                    var cell = (TransitionTable.Items[i] as State).Values[j];
+                    var cell = (dataGrid.Items[i] as State).Values[j];
                     if (cell < 0 || cell > 1)
                         throw new ArgumentException($"Значення переходу із стану {i + 1} в стан {j + 1} має невірне значення!\nЗначення повинно бути від 0 до 1!");
-                    rowValue += cell;
+                    sumOfRow += cell;
                     table[i, j] = cell;
                 }
 
-                if (rowValue != 1)
+                if (sumOfRow != 1)
                 {
-                    if (rowValue < 1 && EnableAutoFilling)
+                    if (sumOfRow < 1 && EnableAutoFilling)
                     {
-                        table[i, i] = 1 - (rowValue - table[i, i]);
+                        table[i, i] = 1 - (sumOfRow - table[i, i]);
+                        isTableProgrammableChanged = true;
                     }
-                    else if (rowValue > 1 && EnableAutoFilling)
+                    else if (sumOfRow > 1 && EnableAutoFilling)
                         throw new ArgumentException($"Для доповнення сума переходів із стану повинна бути менше 1!");
                     else
                         throw new ArithmeticException($"Сума ймовірностей переходу із стану №{i + 1} не дорівнює 1!\n Введено некоректні дані. Будь ласка спробуйте ще раз.\nЗверніть увагу, правильний формат запису - '0.25'");
@@ -128,21 +149,21 @@ namespace TimeHomogeneousChain
 
         private void BtnClearTable_Click(object sender, RoutedEventArgs e)
         {
-            GenerateTransitionTable(CountOfStates);
+            GenerateTransitionTable(TransitionTable, CountOfStates);
         }
 
         private void BtnRandomFillTable_Click(object sender, RoutedEventArgs e)
         {
-            TransitionTable.ItemsSource = GenerateTransitionTableWithRandomValues();
+            TransitionTable.ItemsSource = GenerateTransitionTableWithRandomValues(CountOfStates);
         }
 
-        private IEnumerable GenerateTransitionTableWithRandomValues()
+        private IEnumerable GenerateTransitionTableWithRandomValues(int n)
         {
             IList<State> randomState = new List<State>();
             Random random = new Random();
-            for (int i = 0; i < CountOfStates; ++i)
+            for (int i = 0; i < n; ++i)
             {
-                decimal[] values = new decimal[countOfStates];
+                decimal[] values = new decimal[n];
                 for (int j = 0; j < values.Length && values.Sum() != 1; ++j)
                 {
                     values[j] = (decimal)random.Next(0, 100 - (int)(values.Sum() * 100)) / 100;
