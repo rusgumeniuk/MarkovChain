@@ -101,6 +101,8 @@ namespace TimeHomogeneousChain
                 for (int j = 0; j < TransitionTable.Columns.Count; ++j)
                 {
                     var cell = (TransitionTable.Items[i] as State).Values[j];
+                    if (cell < 0 || cell > 1)
+                        throw new ArgumentException($"Значення переходу із стану {i + 1} в стан {j + 1} має невірне значення!\nЗначення повинно бути від 0 до 1!");
                     rowValue += cell;
                     table[i, j] = cell;
                 }
