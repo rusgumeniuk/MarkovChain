@@ -51,6 +51,8 @@ namespace TimeHomogeneousChain
             }
         }
 
+        public bool EnableAutoFilling { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -106,8 +108,18 @@ namespace TimeHomogeneousChain
                     rowValue += cell;
                     table[i, j] = cell;
                 }
+
                 if (rowValue != 1)
-                    throw new ArithmeticException($"Сума ймовірностей переходу із стану №{i + 1} не дорівнює 1!\n Введено некоректні дані. Будь ласка спробуйте ще раз.\nЗверніть увагу, правильний формат запису - '0.25'");
+                {
+                    if (rowValue < 1 && EnableAutoFilling)
+                    {
+                        table[i, i] = 1 - (rowValue - table[i, i]);
+                    }
+                    else if (rowValue > 1 && EnableAutoFilling)
+                        throw new ArgumentException($"Для доповнення сума переходів із стану повинна бути менше 1!");
+                    else
+                        throw new ArithmeticException($"Сума ймовірностей переходу із стану №{i + 1} не дорівнює 1!\n Введено некоректні дані. Будь ласка спробуйте ще раз.\nЗверніть увагу, правильний формат запису - '0.25'");
+                }
             }
             return table;
         }

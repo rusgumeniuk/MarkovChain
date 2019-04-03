@@ -53,13 +53,21 @@
             Text="{Binding StartIndex}" />
         <Label
             Grid.Row="2"
+            Grid.Column="1"
+            Margin="10,0,10,0"
+            Content="Включити режим автодоповнення" />
+        <CheckBox
+            Grid.Row="3"
+            Grid.Column="1"
+            Margin="10,0,10,0"
+            IsChecked="{Binding EnableAutoFilling}" />
+        <Label
+            Grid.Row="2"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
             Content="Кількість кроків:" />
         <TextBox
             Grid.Row="3"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
             TabIndex="2"
             Text="{Binding NumberOfSteps}" />
         <Label
