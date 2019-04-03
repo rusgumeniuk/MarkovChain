@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -131,7 +133,25 @@ namespace TimeHomogeneousChain
 
         private void BtnRandomFillTable_Click(object sender, RoutedEventArgs e)
         {
+            TransitionTable.ItemsSource = GenerateTransitionTableWithRandomValues();
+        }
 
+        private IEnumerable GenerateTransitionTableWithRandomValues()
+        {
+            IList<State> randomState = new List<State>();
+            Random random = new Random();
+            for (int i = 0; i < CountOfStates; ++i)
+            {
+                decimal[] values = new decimal[countOfStates];
+                for (int j = 0; j < values.Length && values.Sum() != 1; ++j)
+                {
+                    values[j] = (decimal)random.Next(0, 100 - (int)(values.Sum() * 100)) / 100;
+                }
+                if (values.Sum() != 1)
+                    values[i] = 1 - (values.Sum() - values[i]);
+                randomState.Add(new State(i, values));
+            }
+            return randomState;
         }
     }
 
@@ -143,6 +163,11 @@ namespace TimeHomogeneousChain
         {
             this.Index = index;
             Values = new decimal[countOfStates];
+        }
+        public State(int index, decimal[] values)
+        {
+            this.Index = index;
+            this.Values = values;
         }
     }
 }
