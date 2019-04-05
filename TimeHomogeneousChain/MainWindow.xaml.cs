@@ -88,7 +88,7 @@ namespace TimeHomogeneousChain
                 {
                     rowOfTable[j] = updatedTable[i, j];
                 }
-                updatedStates.Add(new State(i, rowOfTable));
+                updatedStates.Add(new State(i + 1, rowOfTable));
             }
             dataGrid.ItemsSource = updatedStates;
         }
@@ -96,7 +96,7 @@ namespace TimeHomogeneousChain
         {
             try
             {
-                decimal[,] parsedTable = GetTable(TransitionTable);
+                decimal[,] parsedTable = ParseDataGridAndGetTable(TransitionTable);
                 if (isTableProgrammableChanged)
                 {
                     UpdateTransitionTable(TransitionTable, parsedTable);
@@ -104,11 +104,7 @@ namespace TimeHomogeneousChain
 
                 Task task = new Task(countOfStates, startIndex, NumberOfSteps, parsedTable);
                 task.Solve();
-                MessageBox.Show(task.GetResult());
-                //    {0.1m, 0.2m, 0.3m, 0.4m},
-                //    { 0, 0.3m,0.2m,0.5m},
-                //    {0,0,0.4m,0.6m},
-                //    {0,0,0,1}                
+                TextBlockResult.Text = task.GetResult();
             }
             catch (Exception ex)
             {
@@ -116,7 +112,7 @@ namespace TimeHomogeneousChain
             }
         }
 
-        private decimal[,] GetTable(DataGrid dataGrid)
+        private decimal[,] ParseDataGridAndGetTable(DataGrid dataGrid)
         {
             decimal[,] table = new decimal[countOfStates, countOfStates];
             for (int i = 0; i < dataGrid.Items.Count; ++i)
@@ -170,7 +166,7 @@ namespace TimeHomogeneousChain
                 }
                 if (values.Sum() != 1)
                     values[i] = 1 - (values.Sum() - values[i]);
-                randomState.Add(new State(i, values));
+                randomState.Add(new State(i + 1, values));
             }
             return randomState;
         }
