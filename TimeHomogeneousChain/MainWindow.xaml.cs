@@ -162,7 +162,7 @@ namespace TimeHomogeneousChain
                 decimal[] values = new decimal[n];
                 for (int j = 0; j < values.Length && values.Sum() != 1; ++j)
                 {
-                    values[j] = (decimal)random.Next(0, 100 - (int)(values.Sum() * 100)) / 100;
+                    values[j] = Math.Round((decimal)random.Next(0, 100 - (int)(values.Sum() * 100)) / (100 * values.Length - (j + 1)), 4);
                 }
                 if (values.Sum() != 1)
                     values[i] = 1 - (values.Sum() - values[i]);
