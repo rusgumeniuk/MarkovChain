@@ -30,7 +30,7 @@ namespace TimeHomogeneousChain
             resultText.AppendLine("Ймовірності перебування системи в станах:");
             for (int i = 0; i < CountOfStates; ++i)
             {
-                resultText.AppendLine($"Стан №{i + 1}: {ProbabilityOfStates[NumberOfSteps - 1, i]}");
+                resultText.AppendLine($"у стані №{i + 1}: {Math.Round(ProbabilityOfStates[NumberOfSteps - 1, i] * 100, 10)} %");
             }
             return resultText.ToString();
         }
