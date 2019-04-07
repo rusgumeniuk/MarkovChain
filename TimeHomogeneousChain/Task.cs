@@ -67,7 +67,7 @@ namespace TimeHomogeneousChain
                     }
                 }
             }
-            return array.Sum() == 1 ? array : throw new ArithmeticException($"Сума імовірностей станів на кроці {indexOfStep} не дорівнює 1!");
+            return Math.Abs(array.Sum() - 1) < 0.0005m ? array : throw new ArithmeticException($"Сума імовірностей станів на кроці {indexOfStep} не дорівнює 1!");
         }
     }
 }
