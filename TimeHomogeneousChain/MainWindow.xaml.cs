@@ -13,22 +13,22 @@ namespace TimeHomogeneousChain
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ushort countOfStates = 1;
-        private ushort numberOfSteps = 1;
-        private ushort startIndex;
+        private int countOfStates = 1;
+        private int numberOfSteps = 1;
+        private int startIndex;
         private bool isTableProgrammableChanged;
-        public ushort StartIndex
+        public int StartIndex
         {
-            get => (ushort)(startIndex + 1);
+            get => (int)(startIndex + 1);
             set
             {
                 if (value < 1 || value > countOfStates)
                     MessageBox.Show("Будь ласка виберіть коректний номер початкового стану!");
                 else
-                    startIndex = (ushort)(value - 1);
+                    startIndex = (int)(value - 1);
             }
         }
-        public ushort CountOfStates
+        public int CountOfStates
         {
             get => countOfStates;
             set
@@ -42,7 +42,7 @@ namespace TimeHomogeneousChain
                     MessageBox.Show("Будь ласка введіть кількість станів системи.\nЧисло повинно бути бути більше нуля!");
             }
         }
-        public ushort NumberOfSteps
+        public int NumberOfSteps
         {
             get => numberOfSteps;
             set
@@ -62,7 +62,7 @@ namespace TimeHomogeneousChain
             DataContext = this;
         }
 
-        private void GenerateTransitionTable(DataGrid dataGrid, ushort countOfStates)
+        private void GenerateTransitionTable(DataGrid dataGrid, int countOfStates)
         {
             dataGrid.Columns.Clear();
 
@@ -176,7 +176,7 @@ namespace TimeHomogeneousChain
     {
         public int Index { get; set; }
         public decimal[] Values { get; set; }
-        public State(int index, uint countOfStates)
+        public State(int index, int countOfStates)
         {
             this.Index = index;
             Values = new decimal[countOfStates];

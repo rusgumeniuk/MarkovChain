@@ -8,14 +8,14 @@ namespace TimeInhomogeneousChain
 {
     internal class Task : ITask
     {
-        private readonly ushort IndexOfStartState;
-        private readonly ushort CountOfStates;
-        private readonly ushort NumberOfSteps;
+        private readonly int IndexOfStartState;
+        private readonly int CountOfStates;
+        private readonly int NumberOfSteps;
         private readonly decimal[,,] ProbabilityOfTransition;
         private readonly decimal[,] ProbabilityOfStates;
         public bool IsSolved { get; set; }
 
-        public Task(ushort countOfStates, ushort indexOfStartState, ushort countOfSteps, decimal[,,] probabilitiesOfTransition)
+        public Task(int countOfStates, int indexOfStartState, int countOfSteps, decimal[,,] probabilitiesOfTransition)
         {
             CountOfStates = countOfStates;
             IndexOfStartState = indexOfStartState;
