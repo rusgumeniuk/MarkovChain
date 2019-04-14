@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,10 +14,11 @@ namespace TimeInhomogeneousChain
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ushort countOfStates = 1;
-        private ushort numberOfSteps = 1;
+        private ushort countOfStates = 2;
+        private ushort numberOfSteps = 2;
         private ushort startIndex;
         private bool isTableProgrammableChanged;
+
         public ushort StartIndex
         {
             get => (ushort)(startIndex + 1);
@@ -25,7 +27,10 @@ namespace TimeInhomogeneousChain
                 if (value < 1 || value > countOfStates)
                     MessageBox.Show("Будь ласка виберіть коректний номер початкового стану!");
                 else
+                {
                     startIndex = (ushort)(value - 1);
+                    //AddTablesToGrid();
+                }
             }
         }
         public ushort CountOfStates
@@ -36,22 +41,12 @@ namespace TimeInhomogeneousChain
                 if (value > 0)
                 {
                     countOfStates = value;
+                    AddTablesToGrid();
                 }
                 else
                     MessageBox.Show("Будь ласка введіть кількість станів системи.\nЧисло повинно бути бути більше нуля!");
             }
         }
-
-        private void AddTablesToGrid()
-        {
-            TransitionTables.Clear();
-            for (int i = 0; i < NumberOfSteps; ++i)
-            {
-                TransitionTables.Add(new Label() { Content = $"Таблиця переходів на кроці №{i + 1}" });
-                TransitionTables.Add(GenerateTransitionTables(i));
-            }
-        }
-
         public ushort NumberOfSteps
         {
             get => numberOfSteps;
@@ -66,25 +61,34 @@ namespace TimeInhomogeneousChain
                     MessageBox.Show("Будь ласка введіть кількість кроків системи.\nЧисло повинно бути більше нуля!");
             }
         }
-
         public bool EnableAutoFilling { get; set; }
-
         public ObservableCollection<UIElement> TransitionTables { get; set; } = new ObservableCollection<UIElement>();
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
+            AddTablesToGrid();
         }
 
-        private DataGrid GenerateTransitionTables(int index)
+        private void AddTablesToGrid()
+        {
+            TransitionTables.Clear();
+            for (int i = 0; i < NumberOfSteps; ++i)
+            {
+                TransitionTables.Add(new Label() { Content = $"Таблиця ймовіврностей переходів на кроці №{i + 1}" });
+                TransitionTables.Add(GenerateTransitionTable(i));
+            }
+        }
+        private DataGrid GenerateTransitionTable(int index)
         {
             DataGrid dataGrid = new DataGrid()
             {
                 AutoGenerateColumns = false,
                 CanUserDeleteRows = false,
                 CanUserAddRows = false,
-                Name = $"DataGrid{index + 1}"
+                Name = $"DataGrid{index + 1}",
+                ToolTip = $"Таблиця ймовірностей переходу системи з i-го стану в j-ий стан на кроці №{index + 1}."
             };
 
             List<State> stateList = new List<State>();
@@ -96,9 +100,7 @@ namespace TimeInhomogeneousChain
                 col.Binding = binding;
                 dataGrid.Columns.Add(col);
             }
-            
-            dataGrid.ItemsSource = index != 0 ? stateList : new List<State>() { stateList[startIndex] };
-            
+            dataGrid.ItemsSource = stateList;
             return dataGrid;
         }
 
@@ -106,13 +108,13 @@ namespace TimeInhomogeneousChain
         {
             try
             {
-                decimal[,,] parsedTables = ParseDataGridAndGetTable();
+                decimal[,,] parsedTable = ParseDataGridsAndGetTable();
                 if (isTableProgrammableChanged)
                 {
-                    UpdateTransitionTable(parsedTables);
+                    UpdateTransitionTables(parsedTable);
                 }
 
-                Task task = new Task(countOfStates, startIndex, NumberOfSteps, parsedTables);
+                Task task = new Task(countOfStates, startIndex, NumberOfSteps, parsedTable);
                 task.Solve();
                 TextBlockResult.Text = task.GetResult();
             }
@@ -122,7 +124,7 @@ namespace TimeInhomogeneousChain
             }
         }
 
-        private void UpdateTransitionTable(decimal[,,] updatedTable)
+        private void UpdateTransitionTables(decimal[,,] updatedTable)
         {
             for (int indexOfStep = 0, tableIndex = 1; tableIndex < TransitionTables.Count; ++indexOfStep, tableIndex += 2)
             {
@@ -140,8 +142,7 @@ namespace TimeInhomogeneousChain
                 dataGrid.ItemsSource = updatedStates;
             }
         }
-
-        private decimal[,,] ParseDataGridAndGetTable()
+        private decimal[,,] ParseDataGridsAndGetTable()
         {
             decimal[,,] table = new decimal[countOfStates, countOfStates, numberOfSteps];
             for (int indexOfStep = 0, tablesIndex = 1; tablesIndex < TransitionTables.Count; tablesIndex += 2, indexOfStep++)
@@ -180,16 +181,15 @@ namespace TimeInhomogeneousChain
         {
             for (int i = 0; i + 1 < TransitionTables.Count; i += 2)
             {
-                TransitionTables[i + 1] = GenerateTransitionTables(i / 2);
+                TransitionTables[i + 1] = GenerateTransitionTable(i / 2);
             }
         }
-
         private void BtnRandomFillTable_Click(object sender, RoutedEventArgs e)
         {
-            GenerateTransitionTableWithRandomValues(CountOfStates);
+            GenerateTransitionTablesWithRandomValues(CountOfStates);
         }
 
-        private void GenerateTransitionTableWithRandomValues(int n)
+        private void GenerateTransitionTablesWithRandomValues(int n)
         {
             for (int tableIndex = 1; tableIndex < TransitionTables.Count; tableIndex += 2)
             {
@@ -198,6 +198,7 @@ namespace TimeInhomogeneousChain
                 Random random = new Random();
                 for (int i = 0; i < n; ++i)
                 {
+                    Thread.Sleep(tableIndex % 2 + 2);
                     decimal[] values = new decimal[n];
                     for (int j = 0; j < values.Length && values.Sum() != 1; ++j)
                     {
