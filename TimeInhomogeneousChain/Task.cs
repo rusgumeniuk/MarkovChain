@@ -26,6 +26,8 @@ namespace TimeInhomogeneousChain
 
         public string GetResult()
         {
+            if (!IsSolved)
+                throw new InvalidOperationException("Спочатку знайдіть рішення задачі!");
             StringBuilder resultText = new StringBuilder();
             resultText.AppendLine("Ймовірності перебування системи в станах:");
             for (int i = 0; i < CountOfStates; ++i)
@@ -37,16 +39,24 @@ namespace TimeInhomogeneousChain
 
         public void Solve()
         {
-            for (int indexOfStep = 0; indexOfStep < NumberOfSteps; ++indexOfStep)
+            try
             {
-                decimal[] row = CalculateProbabilitiesOfStates(indexOfStep);
-                for (int indexOfState = 0; indexOfState < CountOfStates; ++indexOfState)
+                for (int indexOfStep = 0; indexOfStep < NumberOfSteps; ++indexOfStep)
                 {
-                    ProbabilityOfStates[indexOfStep, indexOfState] = row[indexOfState];
+                    decimal[] row = CalculateProbabilitiesOfStates(indexOfStep);
+                    for (int indexOfState = 0; indexOfState < CountOfStates; ++indexOfState)
+                    {
+                        ProbabilityOfStates[indexOfStep, indexOfState] = row[indexOfState];
+                    }
                 }
+                IsSolved = true;
+            }
+            catch (Exception ex)
+            {
+                IsSolved = false;
+                throw ex;
             }
         }
-
         private decimal[] CalculateProbabilitiesOfStates(int indexOfStep)
         {
             decimal[] array = new decimal[CountOfStates];
@@ -67,7 +77,7 @@ namespace TimeInhomogeneousChain
                     }
                 }
             }
-            return Math.Abs(array.Sum() - 1) < 0.001m  ? array : throw new ArithmeticException($"Сума імовірностей станів на кроці {indexOfStep} не дорівнює 1!");
+            return Math.Abs(array.Sum() - 1) < 0.001m ? array : throw new ArithmeticException($"Сума імовірностей станів на кроці {indexOfStep} не дорівнює 1!");
         }
     }
 }
