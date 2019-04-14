@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:TimeInhomogeneousChain"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="MainWindow"
+    Title="Неоднорідні ланцюги Маркова"
     Width="720"
     Height="600"
     MinWidth="640"
@@ -33,8 +33,8 @@
             <ColumnDefinition Width="0.5*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.35*" />
-            <RowDefinition Height="0.65*" />
+            <RowDefinition Height="0.30*" />
+            <RowDefinition Height="0.7*" />
         </Grid.RowDefinitions>
         <Grid
             Grid.Row="0"
@@ -42,23 +42,25 @@
             Grid.ColumnSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.45*" MinHeight="75" />
-                <RowDefinition Height="0.55*" MinHeight="110" />
+                <RowDefinition Height="0.55*" MinHeight="180" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.1*" />
-                <ColumnDefinition Width="0.6*" />
+                <ColumnDefinition Width="102*" />
+                <ColumnDefinition Width="451*" />
+                <ColumnDefinition Width="161*" />
             </Grid.ColumnDefinitions>
 
             <Image
                 Grid.Row="0"
                 Grid.Column="0"
-                Margin="5"
+                Margin="5,5,4.6,4.6"
                 Source="/Resources/UkrFlag.png"
                 Stretch="Fill" />
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="1"
-                Margin="5"
+                Grid.ColumnSpan="2"
+                Margin="5.4,5,4.6,4.6"
                 Background="{StaticResource BackgroundPanel}"
                 FontSize="25"
                 TextAlignment="Center">
@@ -72,13 +74,13 @@
                     FontStretch="UltraExpanded"
                     FontStyle="Oblique"
                     FontWeight="Bold"
-                    Text="Тема: однорідні ланцюги Маркова" />
+                    Text="Тема: неоднорідні ланцюги Маркова" />
             </TextBlock>
             <TextBlock
                 Grid.Row="1"
                 Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Margin="5,0,5,0"
+                Grid.ColumnSpan="3"
+                Margin="5,0.4,4.6,-1"
                 Background="{StaticResource BackgroundPanel}"
                 TextWrapping="Wrap">
                 <Run
@@ -86,7 +88,7 @@
                     FontWeight="Bold"
                     Text="Умова задачі" />
                 <LineBreak />
-                <Run FontSize="13" Text="По літаку ведеться стрільба N одиночними незалежними вистрілами. Після стрільби літак (система S) може опинитися в одному з K станів системи. Визначити ймовірність станів цілі після стрільби (після N-го вистрілу), якщо в початковий момент (до стрільби) літак знаходився в стані S" /><Run BaselineAlignment="Subscript" Text="m" /><Run Text=", ймовірності переходу літака із одного стану в інший від вистрілу до вистрілу не змінюються і рівні. Таблицю ймовірностей переходів представлено нижче." />
+                <Run FontSize="13" Text="По літаку, що наближується, ведеться стрільба K одиничними незалежними вистрілами. Після стрільби літак може знаходитися в одному з N станів системи. Таблиці ймовірності переходу систему із одного стану до іншого для певного кроку зображені нижче. Знайти ймовірності перебування цілі після обстрілу, якщо в початковий момент система знаходилась в стані S" /><Run BaselineAlignment="Subscript" Text="m." />
             </TextBlock>
         </Grid>
         <Grid
@@ -175,9 +177,9 @@
                 Grid.Row="5"
                 Grid.RowSpan="2"
                 Grid.Column="0"
-                Grid.ColumnSpan="2">
+                Grid.ColumnSpan="2"
+                CanContentScroll="True">
                 <ItemsControl ItemsSource="{Binding TransitionTables}" />
-
             </ScrollViewer>
             <Button
                 Name="BtnCalculateStatesProbabilities"
@@ -227,7 +229,6 @@
                     Margin="10,5,10,5"
                     TextWrapping="Wrap" />
             </ScrollViewer>
-
         </Grid>
     </Grid>
 </Window>
