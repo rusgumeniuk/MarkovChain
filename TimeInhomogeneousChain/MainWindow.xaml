@@ -1,0 +1,233 @@
+﻿<Window
+    x:Class="TimeInhomogeneousChain.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TimeInhomogeneousChain"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="MainWindow"
+    Width="720"
+    Height="600"
+    MinWidth="640"
+    MinHeight="550"
+    ResizeMode="CanResizeWithGrip"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <Style TargetType="DataGridRowHeader">
+            <Setter Property="Content" Value="{Binding Path=Index}" />
+        </Style>
+        <SolidColorBrush
+            x:Key="BackgroundPanel"
+            Opacity="0.7"
+            Color="Khaki" />
+    </Window.Resources>
+    <Grid>
+        <Grid.Background>
+            <ImageBrush
+                ImageSource="/Resources/Background.png"
+                Stretch="UniformToFill"
+                TileMode="None" />
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="0.5*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.35*" />
+            <RowDefinition Height="0.65*" />
+        </Grid.RowDefinitions>
+        <Grid
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.45*" MinHeight="75" />
+                <RowDefinition Height="0.55*" MinHeight="110" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.1*" />
+                <ColumnDefinition Width="0.6*" />
+            </Grid.ColumnDefinitions>
+
+            <Image
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="5"
+                Source="/Resources/UkrFlag.png"
+                Stretch="Fill" />
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="5"
+                Background="{StaticResource BackgroundPanel}"
+                FontSize="25"
+                TextAlignment="Center">
+                <Run
+                    BaselineAlignment="Center"
+                    FontStyle="Italic"
+                    FontWeight="DemiBold"
+                    Text="Рішення військово-спеціальних задачі" />
+                <LineBreak />
+                <Run
+                    FontStretch="UltraExpanded"
+                    FontStyle="Oblique"
+                    FontWeight="Bold"
+                    Text="Тема: однорідні ланцюги Маркова" />
+            </TextBlock>
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="5,0,5,0"
+                Background="{StaticResource BackgroundPanel}"
+                TextWrapping="Wrap">
+                <Run
+                    FontSize="17"
+                    FontWeight="Bold"
+                    Text="Умова задачі" />
+                <LineBreak />
+                <Run FontSize="13" Text="По літаку ведеться стрільба N одиночними незалежними вистрілами. Після стрільби літак (система S) може опинитися в одному з K станів системи. Визначити ймовірність станів цілі після стрільби (після N-го вистрілу), якщо в початковий момент (до стрільби) літак знаходився в стані S" /><Run BaselineAlignment="Subscript" Text="m" /><Run Text=", ймовірності переходу літака із одного стану в інший від вистрілу до вистрілу не змінюються і рівні. Таблицю ймовірностей переходів представлено нижче." />
+            </TextBlock>
+        </Grid>
+        <Grid
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="10"
+            Background="{StaticResource BackgroundPanel}">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="0.3*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition Width="0.5*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0">
+                <Run
+                    FontSize="24"
+                    FontStyle="Italic"
+                    FontWeight="Bold"
+                    Text="Дано:" />
+            </Label>
+            <Label
+                Grid.Row="1"
+                Grid.Column="0"
+                Content="Кількість станів (N):"
+                ToolTip="Кількість станів, в яких може перебувати система" />
+            <TextBox
+                Grid.Row="2"
+                Grid.Column="0"
+                TabIndex="0"
+                Text="{Binding CountOfStates}"
+                ToolTip="Кількість станів, в яких може перебувати система" />
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="10,0,10,0"
+                ToolTip="Номер стану, в якому система знаходиться спочатку">
+                <Run Text="Номер початкового стану (S" /><Run BaselineAlignment="Subscript" Text="m" /><Run Text="):" />
+            </TextBlock>
+            <TextBox
+                Grid.Row="2"
+                Grid.Column="1"
+                Margin="10,0,10,0"
+                TabIndex="1"
+                Text="{Binding StartIndex}"
+                ToolTip="Номер стану, в якому система знаходиться спочатку" />
+            <Grid
+                Grid.Row="3"
+                Grid.RowSpan="3"
+                Grid.Column="1"
+                Margin="10,0,10,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                ToolTip="Коли цей режим включено, то користувачу не потрібно вводити значення, які знаходяться на головній діагоналі!">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.9*" />
+                    <ColumnDefinition Width="0.1*" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Режим автодоповнення" />
+                <CheckBox
+                    Grid.Column="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding EnableAutoFilling}" />
+            </Grid>
+            <Label
+                Grid.Row="3"
+                Grid.Column="0"
+                Content="Кількість кроків системи (K):"
+                ToolTip="Наприклад, кількість обстрілів літака, який виступає в ролі системи" />
+            <TextBox
+                Grid.Row="4"
+                Grid.Column="0"
+                TabIndex="2"
+                Text="{Binding NumberOfSteps}" />
+            <ScrollViewer
+                Grid.Row="5"
+                Grid.RowSpan="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="2">
+                <ItemsControl ItemsSource="{Binding TransitionTables}" />
+
+            </ScrollViewer>
+            <Button
+                Name="BtnCalculateStatesProbabilities"
+                Grid.Row="7"
+                Grid.Column="0"
+                Margin="5"
+                Click="BtnCalculateStatesProbabilities_Click"
+                Content="Розрахувати імовірності станів"
+                TabIndex="4" />
+            <Button
+                Name="BtnRandomFillTable"
+                Grid.Row="7"
+                Grid.Column="1"
+                Margin="5"
+                Click="BtnRandomFillTable_Click"
+                Content="Автоматично заповнити таблицю"
+                TabIndex="5"
+                ToolTip="Таблиця заповниться випадковими значеннями, які задовільняють початкові умови" />
+            <Button
+                Name="BtnClearTable"
+                Grid.Row="8"
+                Grid.Column="1"
+                Margin="5"
+                Click="BtnClearTable_Click"
+                Content="Очистити таблицю"
+                TabIndex="6" />
+        </Grid>
+        <Grid
+            Grid.Row="1"
+            Grid.Column="2"
+            Margin="10"
+            Background="{StaticResource BackgroundPanel}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="0">
+                <Run
+                    FontSize="24"
+                    FontStyle="Italic"
+                    FontWeight="Bold"
+                    Text="Відповідь:" />
+            </Label>
+            <ScrollViewer Grid.Row="1">
+                <TextBlock
+                    Name="TextBlockResult"
+                    Margin="10,5,10,5"
+                    TextWrapping="Wrap" />
+            </ScrollViewer>
+
+        </Grid>
+    </Grid>
+</Window>
