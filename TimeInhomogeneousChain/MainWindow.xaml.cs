@@ -14,26 +14,26 @@ namespace TimeInhomogeneousChain
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ushort countOfStates = 2;
-        private ushort numberOfSteps = 2;
-        private ushort startIndex;
+        private int countOfStates = 2;
+        private int numberOfSteps = 2;
+        private int startIndex;
         private bool isTableProgrammableChanged;
 
-        public ushort StartIndex
+        public int StartIndex
         {
-            get => (ushort)(startIndex + 1);
+            get => (int)(startIndex + 1);
             set
             {
                 if (value < 1 || value > countOfStates)
                     MessageBox.Show("Будь ласка виберіть коректний номер початкового стану!");
                 else
                 {
-                    startIndex = (ushort)(value - 1);
+                    startIndex = (int)(value - 1);
                     //AddTablesToGrid();
                 }
             }
         }
-        public ushort CountOfStates
+        public int CountOfStates
         {
             get => countOfStates;
             set
@@ -41,13 +41,15 @@ namespace TimeInhomogeneousChain
                 if (value > 0)
                 {
                     countOfStates = value;
+                    if (StartIndex < value)
+                        StartIndex = 1;
                     AddTablesToGrid();
                 }
                 else
                     MessageBox.Show("Будь ласка введіть кількість станів системи.\nЧисло повинно бути бути більше нуля!");
             }
         }
-        public ushort NumberOfSteps
+        public int NumberOfSteps
         {
             get => numberOfSteps;
             set
@@ -76,7 +78,7 @@ namespace TimeInhomogeneousChain
             TransitionTables.Clear();
             for (int i = 0; i < NumberOfSteps; ++i)
             {
-                TransitionTables.Add(new Label() { Content = $"Таблиця ймовіврностей переходів на кроці №{i + 1}" });
+                TransitionTables.Add(new Label() { Content = $"Таблиця ймовірностей переходів на кроці №{i + 1}" });
                 TransitionTables.Add(GenerateTransitionTable(i));
             }
         }
@@ -108,6 +110,8 @@ namespace TimeInhomogeneousChain
         {
             try
             {
+                if (startIndex >= countOfStates)
+                    throw new Exception($"Номер початкового стану системи більше кількості станів!\n Будь ласка введіть значень від 1 до {countOfStates}.");
                 decimal[,,] parsedTable = ParseDataGridsAndGetTable();
                 if (isTableProgrammableChanged)
                 {
@@ -202,7 +206,7 @@ namespace TimeInhomogeneousChain
                     decimal[] values = new decimal[n];
                     for (int j = 0; j < values.Length && values.Sum() != 1; ++j)
                     {
-                        values[j] = (decimal)random.Next(0, 100 - (int)(values.Sum() * 100)) / 100;
+                        values[j] = Math.Round((decimal)random.Next(0, 100 - (int)(values.Sum() * 100)) / (100 * values.Length - (j + 1)), 4);
                     }
                     if (values.Sum() != 1)
                         values[i] = 1 - (values.Sum() - values[i]);
@@ -217,7 +221,7 @@ namespace TimeInhomogeneousChain
     {
         public int Index { get; set; }
         public decimal[] Values { get; set; }
-        public State(int index, uint countOfStates)
+        public State(int index, int countOfStates)
         {
             this.Index = index;
             Values = new decimal[countOfStates];
